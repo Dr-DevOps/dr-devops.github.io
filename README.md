@@ -46,8 +46,7 @@ Hi, I’m **Vinayak Singh**, an experienced **DevOps Engineer** passionate about
 ### **DevOps Engineer | Virtual Internships Partners Ltd**  
 **June 2022 – Present | Remote (UK)**  
 
-> Spearheaded the company’s cloud transformation by implementing scalable, automated infrastructure solutions.  
-
+- Spearheaded the company’s cloud transformation by implementing scalable, automated infrastructure solutions.  
 - Automated cloud provisioning using **Terraform**, reducing deployment times by **40%**.  
 - Deployed and managed **Elastic Kubernetes Service (EKS)**, improving scalability for microservices architecture.  
 - Integrated **ArgoCD** to enable GitOps-driven continuous deployment, cutting deployment errors by **30%**.  
@@ -71,6 +70,14 @@ Hi, I’m **Vinayak Singh**, an experienced **DevOps Engineer** passionate about
 
 - Established CI/CD pipelines on **Digital Ocean**, reducing deployment time by **25%**.  
 - Migrated legacy applications to AWS EC2 and RDS, significantly improving system performance.
+
+---
+
+### **System Administrator | Staunch Eventz Pvt Ltd**  
+**April 2017 – March 2020 | Noida, India**  
+
+- Deployed websites on Digital Ocean using LEMP Stack for MERN-based applications. 
+- Managed on-premises computers, laptops, and software installations, ensuring smooth operation..
 
 ---
 
