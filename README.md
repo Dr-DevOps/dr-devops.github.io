@@ -1,6 +1,6 @@
 # **Vinayak Singh – DevOps Engineer Portfolio** 🚀
 
-
+- **Resume:** [Google Drive Link](https://drive.google.com/file/d/1ppDwfRiqgeG_l2UmxWSssBYYUoXBAs4C/view?usp=drive_link) 
 - **Email:** [vinayakclear@gmail.com](mailto:vinayakclear@gmail.com)  
 - **LinkedIn:** [linkedin.com/in/drdevops](https://www.linkedin.com/in/drdevops)  
 - **GitHub:** [https://github.com/Dr-DevOps](https://github.com/Dr-DevOps)
