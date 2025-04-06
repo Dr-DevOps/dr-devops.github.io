@@ -1,6 +1,6 @@
 # **Vinayak Singh – DevOps Engineer Portfolio** 🚀
 
-- **Resume:** [Google Drive Link](https://drive.google.com/file/d/1ppDwfRiqgeG_l2UmxWSssBYYUoXBAs4C/view?usp=drive_link) 
+- **Resume:** [Google Drive Link](https://drive.google.com/file/d/1UVdVTRNkf2Ex7eaEALtAk1NSK_whfM8j/view) 
 - **Email:** [vinayakclear@gmail.com](mailto:vinayakclear@gmail.com)  
 - **LinkedIn:** [linkedin.com/in/drdevops](https://www.linkedin.com/in/drdevops)  
 - **GitHub:** [https://github.com/Dr-DevOps](https://github.com/Dr-DevOps)
@@ -11,7 +11,7 @@
 
 ## **🌟 About Me**
 
-Hi, I’m **Vinayak Singh**, an experienced **DevOps Engineer** passionate about cloud infrastructure, automation, and security. With over **7+ years of experience** and an **AWS Solution Architect – Associate certification**, I’ve worked on cutting-edge projects that involve cloud optimization, Kubernetes orchestration, and continuous delivery pipelines. I love transforming ideas into scalable solutions and am constantly learning new technologies to stay ahead in this ever-evolving tech landscape.
+Hi, I’m Vinayak Singh, an experienced DevOps Engineer passionate about cloud infrastructure, automation, and security. With over 7+ years of experience and an AWS Solution Architect—Associate certification, I’ve worked on cutting-edge projects involving cloud optimization, Kubernetes orchestration, and continuous delivery pipelines. I love transforming ideas into scalable solutions and am constantly learning new technologies to stay ahead in this ever-evolving tech landscape.
 
 ---
 
@@ -35,7 +35,7 @@ Hi, I’m **Vinayak Singh**, an experienced **DevOps Engineer** passionate about
 | **IaC & Config Mgmt**    | Terraform, CloudFormation                                                                          |
 | **Containers & Orchestration** | Docker, Kubernetes (AWS EKS), AWS ECS                                                        |
 | **Monitoring & Logging** | Prometheus, Grafana, AWS CloudWatch, EFK Stack, Logz.io, DataDog                                   |
-| **Security Tools**       | HashiCorp Vault, KubeSeal, Trivy, TFSec, Kubeaudit                                                 |
+| **Security Tools**       | HashiCorp Vault, KubeSeal, Trivy, TFSec, Kubeaudit, WAF                                                |
 | **Programming**          | Bash, Python, YAML, Helm                                                                           |
 | **Other Tools**          | Jira, Confluence, Notion, Metabase, Slack                                                          |
 
