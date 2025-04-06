@@ -123,7 +123,6 @@ Hi, I’m Vinayak Singh, an experienced DevOps Engineer passionate about cloud i
 
 - **AWS Certified Solutions Architect – Associate**  
   [View Credential](https://bit.ly/credly-aws-csa)
-
 ---
 
 ## **📬 Let’s Connect!**
