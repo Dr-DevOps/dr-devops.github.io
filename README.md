@@ -112,7 +112,7 @@ Hi, I’m Vinayak Singh, an experienced DevOps Engineer passionate about cloud i
 ## **📚 Education**
 
 **Master of Computer Applications – Major in Cloud Computing**  
-*Delhi Skill and Entrepreneurship University – 2023*  
+*Delhi Skill and Entrepreneurship University (established in August 2020 by the Government of NCT of Delhi) – 2023*  
 
 **Bachelor of Computer Applications – Major in Cloud Computing**  
 *Sikkim Manipal University of Distance Education – 2020*  
