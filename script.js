@@ -50,6 +50,11 @@ function initializeAll() {
     initParallaxEffect();
     initKonamiCode();
     initThemeToggle();
+    initCursorBlob();
+    initGlassSheen();
+    initHeroTerminal();
+    initDashboardWidgets();
+    initStatusPill();
 }
 
 // ============================================
@@ -707,4 +712,223 @@ function initThemeToggle() {
             document.documentElement.setAttribute('data-theme', 'system');
         }
     });
+}
+
+// ============================================
+// DYNAMIC CURSOR WALLPAPER BLOB (Lerped)
+// ============================================
+function initCursorBlob() {
+    const blob = document.getElementById('cursor-blob');
+    if (!blob) return;
+    
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let blobX = mouseX;
+    let blobY = mouseY;
+    const speed = 0.07;
+    
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.pageX;
+        mouseY = e.pageY;
+    });
+    
+    function animate() {
+        blobX += (mouseX - blobX) * speed;
+        blobY += (mouseY - blobY) * speed;
+        
+        blob.style.transform = `translate3d(${blobX - 160}px, ${blobY - 160}px, 0)`;
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+}
+
+// ============================================
+// DYNAMIC GLASS SHEEN LIGHT REFLECTION
+// ============================================
+function initGlassSheen() {
+    const cards = document.querySelectorAll('.glass-card');
+    
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+}
+
+// ============================================
+// LIVE PIPELINE TERMINAL SIMULATION
+// ============================================
+function initHeroTerminal() {
+    const terminalBody = document.getElementById('terminal-body');
+    if (!terminalBody) return;
+    
+    const lines = [
+        { type: 'cmd', text: 'terraform apply -auto-approve' },
+        { type: 'log', text: 'aws_eks_cluster.prod: Creating...' },
+        { type: 'log', text: 'aws_eks_node_group.workers: Creating...' },
+        { type: 'log', text: 'aws_eks_cluster.prod: Still creating... [10s elapsed]' },
+        { type: 'log', text: 'aws_eks_cluster.prod: Creation complete [ID: dr-eks-prod]' },
+        { type: 'log', text: 'aws_eks_node_group.workers: Still creating... [10s elapsed]' },
+        { type: 'log', text: 'aws_eks_node_group.workers: Creation complete [ID: workers-nodegroup]' },
+        { type: 'log', text: 'helm_release.argocd: Deploying GitOps controller...' },
+        { type: 'log', text: 'helm_release.argocd: Deployment successful. Syncing state...' },
+        { type: 'success', text: 'Apply complete! Resources: 14 added, 0 changed, 0 destroyed.' },
+        { type: 'cmd', text: 'kubectl get nodes -o wide' },
+        { type: 'success', text: 'NAME            STATUS   ROLES    AGE   VERSION\nip-10-0-1-100   Ready    <none>   45s   v1.28.2\nip-10-0-2-101   Ready    <none>   43s   v1.28.2' },
+        { type: 'cmd', text: 'argocd app sync root-app' },
+        { type: 'success', text: 'App root-app successfully synced. HEALTHY state.' }
+    ];
+    
+    let lineIdx = 0;
+    
+    function addTerminalLine() {
+        if (lineIdx >= lines.length) {
+            setTimeout(() => {
+                terminalBody.innerHTML = '<div class="terminal-line"><span class="prompt">dr-devops$</span> <span class="cmd">deploy_infrastructure --prod</span></div>';
+                lineIdx = 0;
+                addTerminalLine();
+            }, 6000);
+            return;
+        }
+        
+        const lineData = lines[lineIdx];
+        const lineDiv = document.createElement('div');
+        
+        if (lineData.type === 'cmd') {
+            lineDiv.className = 'terminal-line';
+            lineDiv.innerHTML = `<span class="prompt">dr-devops$</span> <span class="cmd"></span>`;
+            terminalBody.appendChild(lineDiv);
+            
+            const cmdSpan = lineDiv.querySelector('.cmd');
+            let charIdx = 0;
+            
+            function typeCmd() {
+                if (charIdx < lineData.text.length) {
+                    cmdSpan.textContent += lineData.text.charAt(charIdx);
+                    charIdx++;
+                    setTimeout(typeCmd, 50);
+                } else {
+                    lineIdx++;
+                    setTimeout(addTerminalLine, 600);
+                }
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+            
+            setTimeout(typeCmd, 300);
+        } else {
+            lineDiv.className = `terminal-line log ${lineData.type === 'success' ? 'success' : ''}`;
+            lineDiv.textContent = lineData.text;
+            terminalBody.appendChild(lineDiv);
+            lineIdx++;
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+            setTimeout(addTerminalLine, lineData.type === 'success' ? 1800 : 800);
+        }
+    }
+    
+    setTimeout(addTerminalLine, 1500);
+}
+
+// ============================================
+// APPLE HEALTH-STYLE DASHBOARD WIDGETS
+// ============================================
+function initDashboardWidgets() {
+    const experienceCircle = document.getElementById('progress-experience');
+    const savingsCircle = document.getElementById('progress-savings');
+    const waveform = document.querySelector('.waveform-path');
+    const consoleContainer = document.getElementById('dashboard-console');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (experienceCircle) {
+                    // Circumference is 251.2
+                    experienceCircle.style.strokeDashoffset = 251.2 - (251.2 * 95) / 100;
+                }
+                if (savingsCircle) {
+                    savingsCircle.style.strokeDashoffset = 251.2 - (251.2 * 30) / 100;
+                }
+                if (waveform) {
+                    waveform.classList.add('animated');
+                }
+                if (consoleContainer) {
+                    startDashboardLogger();
+                }
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    const grid = document.querySelector('.dashboard-widget-grid');
+    if (grid) observer.observe(grid);
+    
+    function startDashboardLogger() {
+        const logs = [
+            'Syncing cluster state...',
+            'Replicas check: OK',
+            'CPU load: 14% average',
+            'API response: 16ms',
+            'Cert renewal: Valid',
+            'PR merge: Deploying success',
+            'Security audits: 0 flaws'
+        ];
+        
+        setInterval(() => {
+            if (consoleContainer.children.length >= 3) {
+                consoleContainer.removeChild(consoleContainer.firstElementChild);
+            }
+            const newLine = document.createElement('div');
+            newLine.className = 'log-line';
+            newLine.textContent = `> ${logs[Math.floor(Math.random() * logs.length)]}`;
+            newLine.style.opacity = '0';
+            newLine.style.transform = 'translateY(5px)';
+            newLine.style.transition = 'all 0.3s ease';
+            consoleContainer.appendChild(newLine);
+            
+            requestAnimationFrame(() => {
+                newLine.style.opacity = '0.8';
+                newLine.style.transform = 'translateY(0)';
+            });
+        }, 3000);
+    }
+}
+
+// ============================================
+// STATUS PILL EXPANSION (Liquid Drop)
+// ============================================
+function initStatusPill() {
+    const btn = document.getElementById('status-pill-btn');
+    const dropdown = document.getElementById('status-card-dropdown');
+    const connectBtn = document.getElementById('status-dropdown-connect');
+    
+    if (!btn || !dropdown) return;
+    
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', !isExpanded);
+        dropdown.setAttribute('aria-hidden', isExpanded);
+        dropdown.classList.toggle('active');
+    });
+    
+    document.addEventListener('click', (e) => {
+        if (dropdown.classList.contains('active') && !dropdown.contains(e.target) && e.target !== btn) {
+            btn.setAttribute('aria-expanded', 'false');
+            dropdown.setAttribute('aria-hidden', 'true');
+            dropdown.classList.remove('active');
+        }
+    });
+    
+    if (connectBtn) {
+        connectBtn.addEventListener('click', () => {
+            btn.setAttribute('aria-expanded', 'false');
+            dropdown.setAttribute('aria-hidden', 'true');
+            dropdown.classList.remove('active');
+        });
+    }
 }
