@@ -60,6 +60,21 @@
                 <a href="#achievements" class="nav-link" role="menuitem">Achievements</a>
                 <a href="#contact" class="nav-link" role="menuitem">Contact</a>
             </div>
+            
+            <!-- Theme Segmented Control -->
+            <div class="theme-segmented-control" role="radiogroup" aria-label="Theme selector">
+                <button class="theme-segment-btn" data-theme="light" role="radio" aria-checked="false" aria-label="Light Theme" title="Light Theme">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <button class="theme-segment-btn" data-theme="dark" role="radio" aria-checked="false" aria-label="Dark Theme" title="Dark Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="theme-segment-btn" data-theme="system" role="radio" aria-checked="true" aria-label="System Theme" title="System Theme">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <div class="theme-active-indicator" id="theme-indicator"></div>
+            </div>
+            
             <div class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" role="button" tabindex="0">
                 <span class="bar"></span>
                 <span class="bar"></span>

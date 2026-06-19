@@ -49,6 +49,7 @@ function initializeAll() {
     initTimelineAnimation();
     initParallaxEffect();
     initKonamiCode();
+    initThemeToggle();
 }
 
 // ============================================
@@ -652,4 +653,58 @@ function activateEasterEgg() {
         message.style.transform = 'translate(-50%, -50%) scale(0.8)';
         setTimeout(() => message.remove(), 400);
     }, 2500);
+}
+
+// ============================================
+// THEME SELECTOR (Light / Dark / System Default)
+// ============================================
+function initThemeToggle() {
+    const segments = document.querySelectorAll('.theme-segment-btn');
+    const indicator = document.getElementById('theme-indicator');
+    
+    // Get stored theme or default to system
+    let currentTheme = localStorage.getItem('theme') || 'system';
+    
+    // Initial setup
+    setTheme(currentTheme);
+    
+    segments.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            const selectedTheme = btn.getAttribute('data-theme');
+            setTheme(selectedTheme);
+        });
+    });
+    
+    function setTheme(theme) {
+        // Update document attribute
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        // Save to localStorage
+        localStorage.setItem('theme', theme);
+        
+        // Find index of the theme button
+        let activeIndex = 2; // Default to system (index 2)
+        segments.forEach((btn, index) => {
+            if (btn.getAttribute('data-theme') === theme) {
+                activeIndex = index;
+                btn.classList.add('active');
+                btn.setAttribute('aria-checked', 'true');
+            } else {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-checked', 'false');
+            }
+        });
+        
+        // Move sliding capsule background (width of each segment button is 28px)
+        if (indicator) {
+            indicator.style.transform = `translateX(${activeIndex * 28}px)`;
+        }
+    }
+    
+    // Sync with system theme preference if set to 'system'
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (localStorage.getItem('theme') === 'system') {
+            document.documentElement.setAttribute('data-theme', 'system');
+        }
+    });
 }
