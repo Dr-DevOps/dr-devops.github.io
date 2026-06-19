@@ -104,24 +104,23 @@ function initParticles() {
     resize();
     
     const particles = [];
-    const particleCount = Math.min(60, Math.floor(window.innerWidth / 20));
+    const particleCount = Math.min(45, Math.floor(window.innerWidth / 30));
     
-    // Color palette for particles
+    // Subtle white and light blue stardust palette
     const colors = [
-        { r: 0, g: 212, b: 255 },    // Cyan
-        { r: 124, g: 58, b: 237 },    // Purple
-        { r: 92, g: 225, b: 255 },    // Light cyan
-        { r: 167, g: 139, b: 250 },   // Light purple
+        { r: 255, g: 255, b: 255 },
+        { r: 10, g: 132, b: 255 },
+        { r: 255, g: 255, b: 255 },
     ];
     
     class Particle {
         constructor() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.vx = (Math.random() - 0.5) * 0.4;
-            this.vy = (Math.random() - 0.5) * 0.4;
-            this.size = Math.random() * 2 + 0.5;
-            this.opacity = Math.random() * 0.4 + 0.1;
+            this.vx = (Math.random() - 0.5) * 0.25;
+            this.vy = (Math.random() - 0.5) * 0.25;
+            this.size = Math.random() * 1.5 + 0.3;
+            this.opacity = Math.random() * 0.15 + 0.05;
             this.color = colors[Math.floor(Math.random() * colors.length)];
         }
         
@@ -153,20 +152,20 @@ function initParticles() {
             particle.draw();
         });
         
-        // Draw connections with gradient colors
+        // Draw connection lines with high transparency
         particles.forEach((particle, i) => {
             particles.slice(i + 1).forEach(otherParticle => {
                 const dx = particle.x - otherParticle.x;
                 const dy = particle.y - otherParticle.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                if (distance < 140) {
-                    const alpha = 0.08 * (1 - distance / 140);
+                if (distance < 120) {
+                    const alpha = 0.03 * (1 - distance / 120);
                     ctx.beginPath();
                     ctx.moveTo(particle.x, particle.y);
                     ctx.lineTo(otherParticle.x, otherParticle.y);
-                    ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`;
-                    ctx.lineWidth = 0.8;
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                    ctx.lineWidth = 0.6;
                     ctx.stroke();
                 }
             });
