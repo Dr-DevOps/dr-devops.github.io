@@ -55,6 +55,7 @@ function initializeAll() {
     initHeroTerminal();
     initDashboardWidgets();
     initStatusPill();
+    initCopyrightYear();
 }
 
 // ============================================
@@ -76,8 +77,8 @@ function initNavigation() {
     window.addEventListener('scroll', handleScroll);
     
     function updateActiveNavLink() {
-        const sections = document.querySelectorAll('.section');
-        const scrollPos = window.scrollY + 100;
+        const sections = document.querySelectorAll('.hero, .section');
+        const scrollPos = window.scrollY + 120;
         
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -85,9 +86,9 @@ function initNavigation() {
             const sectionId = section.getAttribute('id');
             
             if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                navLinks.forEach(link => link.classList.remove('active'));
                 const activeLink = document.querySelector(`[href="#${sectionId}"]`);
                 if (activeLink) {
+                    navLinks.forEach(link => link.classList.remove('active'));
                     activeLink.classList.add('active');
                 }
             }
@@ -463,7 +464,15 @@ function initContactFormTooltips() {
         
         link.addEventListener('mouseleave', () => {
             const tooltip = link.querySelector('.tooltip-dynamic');
-            if (tooltip) tooltip.remove();
+            if (tooltip) {
+                tooltip.style.opacity = '0';
+                tooltip.style.transform = 'translateX(-50%) translateY(4px)';
+                setTimeout(() => {
+                    if (tooltip.parentNode === link) {
+                        tooltip.remove();
+                    }
+                }, 200);
+            }
         });
     });
 }
@@ -687,6 +696,9 @@ function initThemeToggle() {
         // Save to localStorage
         localStorage.setItem('theme', theme);
         
+        // Update theme metadata details dynamically
+        updateThemeMeta(theme);
+        
         // Find index of the theme button
         let activeIndex = 2; // Default to system (index 2)
         segments.forEach((btn, index) => {
@@ -710,8 +722,28 @@ function initThemeToggle() {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
         if (localStorage.getItem('theme') === 'system') {
             document.documentElement.setAttribute('data-theme', 'system');
+            updateThemeMeta('system');
         }
     });
+}
+
+function updateThemeMeta(theme) {
+    let activeTheme = theme;
+    if (theme === 'system') {
+        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    
+    // Update theme-color meta tag
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+        themeColorMeta.setAttribute('content', activeTheme === 'dark' ? '#060918' : '#f4f5fa');
+    }
+    
+    // Update color-scheme meta tag
+    const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+    if (colorSchemeMeta) {
+        colorSchemeMeta.setAttribute('content', activeTheme);
+    }
 }
 
 // ============================================
@@ -728,8 +760,8 @@ function initCursorBlob() {
     const speed = 0.07;
     
     window.addEventListener('mousemove', (e) => {
-        mouseX = e.pageX;
-        mouseY = e.pageY;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
     });
     
     function animate() {
@@ -769,6 +801,8 @@ function initHeroTerminal() {
     if (!terminalBody) return;
     
     const lines = [
+        { type: 'cmd', text: 'deploy_infrastructure --prod' },
+        { type: 'log', text: 'Initializing production deployment gates...' },
         { type: 'cmd', text: 'tfsec . --concise' },
         { type: 'log', text: 'Scanning infrastructure code for misconfigurations...' },
         { type: 'success', text: 'tfsec: No high/critical severity issues found. PASSED.' },
@@ -783,12 +817,12 @@ function initHeroTerminal() {
         { type: 'success', text: 'NAME        SECOPS_GATE   COMPLIANCE   AGE\nprod-eks    PASSED        98%          4h' }
     ];
     
-    let lineIdx = 0;
+    let lineIdx = 1; // Start at 1 on page load, since the first line is already hardcoded in HTML
     
     function addTerminalLine() {
         if (lineIdx >= lines.length) {
             setTimeout(() => {
-                terminalBody.innerHTML = '<div class="terminal-line"><span class="prompt">dr-devops$</span> <span class="cmd">devsecops_pipeline_run --scan</span></div>';
+                terminalBody.innerHTML = '';
                 lineIdx = 0;
                 addTerminalLine();
             }, 6000);
@@ -928,5 +962,15 @@ function initStatusPill() {
             dropdown.setAttribute('aria-hidden', 'true');
             dropdown.classList.remove('active');
         });
+    }
+}
+
+// ============================================
+// DYNAMIC COPYRIGHT YEAR
+// ============================================
+function initCopyrightYear() {
+    const copyYear = document.getElementById('copyright-year');
+    if (copyYear) {
+        copyYear.textContent = new Date().getFullYear();
     }
 }
