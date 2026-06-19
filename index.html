@@ -3,32 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vinayak Singh – DevOps Engineer Portfolio 🚀 | www.vinayaksingh.xyz</title>
-    <!-- Use relative path for GitHub Pages compatibility -->
-    <link rel="stylesheet" href="./styles.css">
+    <title>Vinayak Singh – DevOps Engineer & Cloud Architect | vinayaksingh.xyz</title>
+    <meta name="description" content="Vinayak Singh — Senior DevOps Engineer with 7+ years of experience in cloud infrastructure, Kubernetes, CI/CD automation, and security-first architecture on AWS & GCP.">
+    <meta name="keywords" content="DevOps Engineer, Cloud Architect, AWS, Kubernetes, Terraform, CI/CD, Vinayak Singh">
+    <meta name="author" content="Vinayak Singh">
+    <meta name="theme-color" content="#060918">
+    <meta name="color-scheme" content="dark">
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Vinayak Singh – DevOps Engineer & Cloud Architect">
+    <meta property="og:description" content="7+ years crafting scalable cloud solutions with AWS, Kubernetes, Terraform & CI/CD. Security-first infrastructure, 30% cost savings delivered.">
+    <meta property="og:url" content="https://dr-devops.github.io/dr-devops/">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Vinayak Singh – DevOps Engineer & Cloud Architect">
+    <meta name="twitter:description" content="7+ years crafting scalable cloud solutions with AWS, Kubernetes, Terraform & CI/CD.">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://dr-devops.github.io/dr-devops/">
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <div id="cursor-follower"></div>
-    <div id="particles-canvas"></div>
+    <canvas id="particles-canvas"></canvas>
     
     <!-- Navigation -->
-    <nav class="navbar" id="navbar">
+    <nav class="navbar" id="navbar" aria-label="Main navigation">
         <div class="nav-container">
-            <a href="#home" class="nav-logo">
+            <a href="#home" class="nav-logo" aria-label="Home">
                 <span class="logo-text">Vinayak Singh</span>
             </a>
-            <div class="nav-menu" id="nav-menu">
-                <a href="#home" class="nav-link active">Home</a>
-                <a href="#about" class="nav-link">About</a>
-                <a href="#skills" class="nav-link">Skills</a>
-                <a href="#experience" class="nav-link">Experience</a>
-                <a href="#achievements" class="nav-link">Achievements</a>
-                <a href="#contact" class="nav-link">Contact</a>
+            <div class="nav-menu" id="nav-menu" role="menubar">
+                <a href="#home" class="nav-link active" role="menuitem">Home</a>
+                <a href="#about" class="nav-link" role="menuitem">About</a>
+                <a href="#skills" class="nav-link" role="menuitem">Skills</a>
+                <a href="#experience" class="nav-link" role="menuitem">Experience</a>
+                <a href="#achievements" class="nav-link" role="menuitem">Achievements</a>
+                <a href="#contact" class="nav-link" role="menuitem">Contact</a>
             </div>
-            <div class="nav-toggle" id="nav-toggle">
+            <div class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" role="button" tabindex="0">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -59,34 +84,34 @@
                     </p>
                     
                     <div class="hero-cta">
-                        <a href="#contact" class="btn btn-primary">
+                        <a href="#contact" class="btn btn-primary" id="cta-contact">
                             <span>Get In Touch</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
-                        <a href="https://drive.google.com/file/d/1UVdVTRNkf2Ex7eaEALtAk1NSK_whfM8j/view" class="btn btn-outline" target="_blank">
+                        <a href="https://drive.google.com/file/d/1UVdVTRNkf2Ex7eaEALtAk1NSK_whfM8j/view" class="btn btn-outline" id="cta-resume" target="_blank" rel="noopener noreferrer">
                             <i class="fas fa-download"></i>
                             <span>Download Resume</span>
                         </a>
                     </div>
                     
                     <div class="social-links">
-                        <a href="mailto:vinayakclear@gmail.com" class="social-link" data-tooltip="Email">
+                        <a href="mailto:vinayakclear@gmail.com" class="social-link" data-tooltip="Email" aria-label="Email">
                             <i class="fas fa-envelope"></i>
                         </a>
-                        <a href="https://www.linkedin.com/in/drdevops" class="social-link" data-tooltip="LinkedIn" target="_blank">
+                        <a href="https://www.linkedin.com/in/drdevops" class="social-link" data-tooltip="LinkedIn" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
-                        <a href="https://github.com/Dr-DevOps" class="social-link" data-tooltip="GitHub" target="_blank">
+                        <a href="https://github.com/Dr-DevOps" class="social-link" data-tooltip="GitHub" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                             <i class="fab fa-github"></i>
                         </a>
-                        <a href="https://stackoverflow.com/users/14925235/vinayak-s" class="social-link" data-tooltip="StackOverflow" target="_blank">
+                        <a href="https://stackoverflow.com/users/14925235/vinayak-s" class="social-link" data-tooltip="StackOverflow" target="_blank" rel="noopener noreferrer" aria-label="StackOverflow">
                             <i class="fab fa-stack-overflow"></i>
                         </a>
                     </div>
                 </div>
                 
                 <div class="hero-visual">
-                    <div class="hero-card">
+                    <div class="hero-card tilt-card">
                         <div class="card-glow"></div>
                         <div class="hero-avatar">
                             <div class="avatar-ring"></div>
@@ -171,7 +196,7 @@
             </div>
             
             <div class="strengths-grid">
-                <div class="strength-card">
+                <div class="strength-card tilt-card">
                     <div class="strength-icon">
                         <i class="fas fa-cloud"></i>
                     </div>
@@ -179,7 +204,7 @@
                     <p class="strength-description">Built and optimized cloud platforms using AWS and GCP.</p>
                 </div>
                 
-                <div class="strength-card">
+                <div class="strength-card tilt-card">
                     <div class="strength-icon">
                         <i class="fas fa-cogs"></i>
                     </div>
@@ -187,7 +212,7 @@
                     <p class="strength-description">Implemented robust CI/CD pipelines using GitLab, Jenkins, ArgoCD, and GitHub Actions.</p>
                 </div>
                 
-                <div class="strength-card">
+                <div class="strength-card tilt-card">
                     <div class="strength-icon">
                         <i class="fas fa-expand-arrows-alt"></i>
                     </div>
@@ -195,7 +220,7 @@
                     <p class="strength-description">Designed highly available, scalable systems using Kubernetes (EKS), Docker, and Terraform.</p>
                 </div>
                 
-                <div class="strength-card">
+                <div class="strength-card tilt-card">
                     <div class="strength-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
@@ -203,7 +228,7 @@
                     <p class="strength-description">Achieved <strong>30% cost savings</strong> on AWS through proactive resource management.</p>
                 </div>
                 
-                <div class="strength-card">
+                <div class="strength-card tilt-card">
                     <div class="strength-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
@@ -211,7 +236,7 @@
                     <p class="strength-description">Integrated security best practices with tools like HashiCorp Vault, Trivy, and TFSec.</p>
                 </div>
                 
-                <div class="strength-card">
+                <div class="strength-card tilt-card">
                     <div class="strength-icon">
                         <i class="fas fa-users"></i>
                     </div>
@@ -541,7 +566,7 @@
             </div>
             
             <div class="achievements-grid">
-                <div class="achievement-card">
+                <div class="achievement-card tilt-card">
                     <div class="achievement-icon">
                         <i class="fas fa-dollar-sign"></i>
                     </div>
@@ -551,7 +576,7 @@
                     </div>
                 </div>
                 
-                <div class="achievement-card">
+                <div class="achievement-card tilt-card">
                     <div class="achievement-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
@@ -561,7 +586,7 @@
                     </div>
                 </div>
                 
-                <div class="achievement-card">
+                <div class="achievement-card tilt-card">
                     <div class="achievement-icon">
                         <i class="fas fa-stopwatch"></i>
                     </div>
@@ -571,7 +596,7 @@
                     </div>
                 </div>
                 
-                <div class="achievement-card">
+                <div class="achievement-card tilt-card">
                     <div class="achievement-icon">
                         <i class="fas fa-code-branch"></i>
                     </div>
@@ -581,7 +606,7 @@
                     </div>
                 </div>
                 
-                <div class="achievement-card">
+                <div class="achievement-card tilt-card">
                     <div class="achievement-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
@@ -639,7 +664,7 @@
                             </div>
                             <div class="cert-content">
                                 <h4>AWS Certified Solutions Architect – Associate</h4>
-                                <a href="https://bit.ly/credly-aws-csa" class="cert-link" target="_blank">
+                                <a href="https://bit.ly/credly-aws-csa" class="cert-link" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-external-link-alt"></i>
                                     View Credential
                                 </a>
@@ -667,7 +692,7 @@
             
             <div class="contact-content">
                 <div class="contact-methods">
-                    <a href="mailto:vinayakclear@gmail.com" class="contact-method">
+                    <a href="mailto:vinayakclear@gmail.com" class="contact-method" id="contact-email">
                         <div class="contact-icon">
                             <i class="fas fa-envelope"></i>
                         </div>
@@ -677,7 +702,7 @@
                         </div>
                     </a>
                     
-                    <a href="https://www.linkedin.com/in/drdevops" class="contact-method" target="_blank">
+                    <a href="https://www.linkedin.com/in/drdevops" class="contact-method" id="contact-linkedin" target="_blank" rel="noopener noreferrer">
                         <div class="contact-icon">
                             <i class="fab fa-linkedin-in"></i>
                         </div>
@@ -687,7 +712,7 @@
                         </div>
                     </a>
                     
-                    <a href="https://github.com/Dr-DevOps" class="contact-method" target="_blank">
+                    <a href="https://github.com/Dr-DevOps" class="contact-method" id="contact-github" target="_blank" rel="noopener noreferrer">
                         <div class="contact-icon">
                             <i class="fab fa-github"></i>
                         </div>
@@ -697,7 +722,7 @@
                         </div>
                     </a>
                     
-                    <a href="https://stackoverflow.com/users/14925235/vinayak-s" class="contact-method" target="_blank">
+                    <a href="https://stackoverflow.com/users/14925235/vinayak-s" class="contact-method" id="contact-stackoverflow" target="_blank" rel="noopener noreferrer">
                         <div class="contact-icon">
                             <i class="fab fa-stack-overflow"></i>
                         </div>
@@ -715,17 +740,16 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p>&copy; 2025 Vinayak Singh. Built with passion and modern web technologies.</p>
+                <p>&copy; 2025 Vinayak Singh. Crafted with passion & modern web tech.</p>
                 <div class="footer-links">
-                    <a href="https://drive.google.com/file/d/1UVdVTRNkf2Ex7eaEALtAk1NSK_whfM8j/view" target="_blank">Resume</a>
+                    <a href="https://drive.google.com/file/d/1UVdVTRNkf2Ex7eaEALtAk1NSK_whfM8j/view" target="_blank" rel="noopener noreferrer">Resume</a>
                     <a href="mailto:vinayakclear@gmail.com">Email</a>
-                    <a href="https://www.linkedin.com/in/drdevops" target="_blank">LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/drdevops" target="_blank" rel="noopener noreferrer">LinkedIn</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Use relative path for GitHub Pages compatibility -->
     <script src="./script.js"></script>
 </body>
 </html>

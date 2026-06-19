@@ -1,3 +1,8 @@
+// ============================================
+// VINAYAK SINGH PORTFOLIO — Script v2.0
+// Modern interactions, 3D tilt, particles
+// ============================================
+
 // Utility Functions
 const debounce = (func, wait) => {
     let timeout;
@@ -40,28 +45,30 @@ function initializeAll() {
     initSmoothScrolling();
     initScrollIndicator();
     initContactFormTooltips();
+    initTiltCards();
+    initTimelineAnimation();
+    initParallaxEffect();
+    initKonamiCode();
 }
 
-// Navigation
+// ============================================
+// NAVIGATION
+// ============================================
 function initNavigation() {
     const navbar = document.getElementById('navbar');
     const navLinks = document.querySelectorAll('.nav-link');
     
-    // Navbar scroll effect
     const handleScroll = throttle(() => {
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
         }
-        
-        // Update active nav link based on scroll position
         updateActiveNavLink();
     }, 16);
     
     window.addEventListener('scroll', handleScroll);
     
-    // Update active nav link
     function updateActiveNavLink() {
         const sections = document.querySelectorAll('.section');
         const scrollPos = window.scrollY + 100;
@@ -82,28 +89,40 @@ function initNavigation() {
     }
 }
 
-// Custom Cursor (Removed)
-// Cursor functionality has been disabled for better compatibility
-
-// Particle Background
+// ============================================
+// PARTICLE BACKGROUND — Cyan/Purple palette
+// ============================================
 function initParticles() {
     const canvas = document.getElementById('particles-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
     
     const particles = [];
-    const particleCount = 80;
+    const particleCount = Math.min(60, Math.floor(window.innerWidth / 20));
+    
+    // Color palette for particles
+    const colors = [
+        { r: 0, g: 212, b: 255 },    // Cyan
+        { r: 124, g: 58, b: 237 },    // Purple
+        { r: 92, g: 225, b: 255 },    // Light cyan
+        { r: 167, g: 139, b: 250 },   // Light purple
+    ];
     
     class Particle {
         constructor() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.vx = (Math.random() - 0.5) * 0.5;
-            this.vy = (Math.random() - 0.5) * 0.5;
-            this.size = Math.random() * 2 + 1;
-            this.opacity = Math.random() * 0.5 + 0.2;
+            this.vx = (Math.random() - 0.5) * 0.4;
+            this.vy = (Math.random() - 0.5) * 0.4;
+            this.size = Math.random() * 2 + 0.5;
+            this.opacity = Math.random() * 0.4 + 0.1;
+            this.color = colors[Math.floor(Math.random() * colors.length)];
         }
         
         update() {
@@ -117,12 +136,11 @@ function initParticles() {
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(99, 102, 241, ${this.opacity})`;
+            ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity})`;
             ctx.fill();
         }
     }
     
-    // Create particles
     for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
     }
@@ -135,20 +153,20 @@ function initParticles() {
             particle.draw();
         });
         
-        // Draw connections
+        // Draw connections with gradient colors
         particles.forEach((particle, i) => {
             particles.slice(i + 1).forEach(otherParticle => {
-                const distance = Math.sqrt(
-                    Math.pow(particle.x - otherParticle.x, 2) +
-                    Math.pow(particle.y - otherParticle.y, 2)
-                );
+                const dx = particle.x - otherParticle.x;
+                const dy = particle.y - otherParticle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                if (distance < 150) {
+                if (distance < 140) {
+                    const alpha = 0.08 * (1 - distance / 140);
                     ctx.beginPath();
                     ctx.moveTo(particle.x, particle.y);
                     ctx.lineTo(otherParticle.x, otherParticle.y);
-                    ctx.strokeStyle = `rgba(99, 102, 241, ${0.1 * (1 - distance / 150)})`;
-                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`;
+                    ctx.lineWidth = 0.8;
                     ctx.stroke();
                 }
             });
@@ -159,18 +177,18 @@ function initParticles() {
     
     animate();
     
-    // Resize handler
     window.addEventListener('resize', debounce(() => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        resize();
     }, 250));
 }
 
-// Scroll Animations
+// ============================================
+// SCROLL ANIMATIONS
+// ============================================
 function initScrollAnimations() {
     const observerOptions = {
         threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
+        rootMargin: '0px 0px -80px 0px'
     };
     
     const observer = new IntersectionObserver((entries) => {
@@ -178,14 +196,12 @@ function initScrollAnimations() {
             if (entry.isIntersecting) {
                 entry.target.classList.add('fade-in', 'visible');
                 
-                // Stagger animations for grid items
                 if (entry.target.classList.contains('strength-card') || 
                     entry.target.classList.contains('skill-category') ||
                     entry.target.classList.contains('achievement-card')) {
                     animateGridItems(entry.target.parentElement);
                 }
                 
-                // Animate stats counters
                 if (entry.target.classList.contains('stat-number')) {
                     animateCounter(entry.target);
                 }
@@ -193,12 +209,11 @@ function initScrollAnimations() {
         });
     }, observerOptions);
     
-    // Observe elements
     const elementsToAnimate = document.querySelectorAll(`
         .hero-text, .hero-visual, .section-header, .about-content,
         .strength-card, .skill-category, .timeline-item,
         .achievement-card, .education-item, .certification-item,
-        .contact-method, .stat-card
+        .contact-method, .stat-card, .secops-category
     `);
     
     elementsToAnimate.forEach(el => {
@@ -208,88 +223,94 @@ function initScrollAnimations() {
 }
 
 function animateGridItems(container) {
+    if (!container) return;
     const items = container.children;
     Array.from(items).forEach((item, index) => {
         setTimeout(() => {
             item.style.transform = 'translateY(0)';
             item.style.opacity = '1';
-        }, index * 100);
+        }, index * 80);
     });
 }
 
 function animateCounter(element) {
-    const target = parseInt(element.textContent);
-    const duration = 2000;
+    const text = element.textContent;
+    const target = parseInt(text);
+    if (isNaN(target)) return;
+    
+    const hasPct = text.includes('%');
+    const hasPlus = text.includes('+');
+    const suffix = hasPct ? '%' : hasPlus ? '+' : '';
+    
+    const duration = 1800;
     const increment = target / (duration / 16);
     let current = 0;
     
     const timer = setInterval(() => {
         current += increment;
         if (current >= target) {
-            element.textContent = target + (element.textContent.includes('%') ? '%' : '+');
+            element.textContent = target + suffix;
             clearInterval(timer);
         } else {
-            element.textContent = Math.floor(current) + (element.textContent.includes('%') ? '%' : '+');
+            element.textContent = Math.floor(current) + suffix;
         }
     }, 16);
 }
 
-// Typing Effect
+// ============================================
+// TYPING EFFECT
+// ============================================
 function initTypingEffect() {
     const title = document.querySelector('.hero-title .name-highlight');
     if (!title) return;
     
     const text = title.textContent;
     title.textContent = '';
-    title.style.borderRight = '3px solid var(--primary-color)';
+    title.style.borderRight = '2px solid var(--primary)';
     
     let i = 0;
     const typeWriter = () => {
         if (i < text.length) {
             title.textContent += text.charAt(i);
             i++;
-            setTimeout(typeWriter, 100);
+            setTimeout(typeWriter, 80);
         } else {
-            setTimeout(() => {
-                title.style.borderRight = 'none';
-            }, 1000);
+            // Blink cursor then remove
+            let blinks = 0;
+            const blinkInterval = setInterval(() => {
+                title.style.borderRight = blinks % 2 === 0 ? '2px solid transparent' : '2px solid var(--primary)';
+                blinks++;
+                if (blinks > 6) {
+                    title.style.borderRight = 'none';
+                    clearInterval(blinkInterval);
+                }
+            }, 400);
         }
     };
     
-    setTimeout(typeWriter, 1000);
+    setTimeout(typeWriter, 800);
 }
 
-// Floating Icons Animation
+// ============================================
+// FLOATING ICONS
+// ============================================
 function initFloatingIcons() {
     const floatingIcons = document.querySelectorAll('.floating-icon');
     
     floatingIcons.forEach((icon, index) => {
-        // Add floating animation with different delays
         icon.style.animationDelay = `${index * 0.5}s`;
-        
-        // Add hover effect
-        icon.addEventListener('mouseenter', () => {
-            icon.style.transform = 'translateY(-10px) scale(1.1)';
-            icon.style.transition = 'transform 0.3s ease';
-        });
-        
-        icon.addEventListener('mouseleave', () => {
-            icon.style.transform = 'translateY(0) scale(1)';
-        });
     });
 }
 
-// Skill Tag Animations
+// ============================================
+// SKILL TAG SHIMMER ANIMATION
+// ============================================
 function initSkillTagAnimations() {
     const skillCategories = document.querySelectorAll('.skill-category');
     
     skillCategories.forEach(category => {
         const tags = category.querySelectorAll('.skill-tag');
         let isAnimating = false;
-        
-        const observerOptions = {
-            threshold: 0.5
-        };
         
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -298,7 +319,7 @@ function initSkillTagAnimations() {
                     animateSkillTags(tags);
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.5 });
         
         observer.observe(category);
     });
@@ -307,18 +328,20 @@ function initSkillTagAnimations() {
 function animateSkillTags(tags) {
     tags.forEach((tag, index) => {
         setTimeout(() => {
-            tag.style.transform = 'scale(1.1)';
-            tag.style.boxShadow = '0 5px 15px rgba(99, 102, 241, 0.4)';
+            tag.style.transform = 'scale(1.08)';
+            tag.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.25)';
             
             setTimeout(() => {
                 tag.style.transform = 'scale(1)';
                 tag.style.boxShadow = 'none';
             }, 200);
-        }, index * 100);
+        }, index * 80);
     });
 }
 
-// Mobile Menu
+// ============================================
+// MOBILE MENU
+// ============================================
 function initMobileMenu() {
     const navToggle = document.getElementById('nav-toggle');
     const navMenu = document.getElementById('nav-menu');
@@ -329,27 +352,37 @@ function initMobileMenu() {
         navMenu.classList.toggle('active');
         navToggle.classList.toggle('active');
         
-        // Animate hamburger bars
         const bars = navToggle.querySelectorAll('.bar');
-        bars.forEach((bar, index) => {
-            bar.style.transform = navToggle.classList.contains('active') ? 
-                `rotate(${index === 0 ? 45 : index === 1 ? 0 : -45}deg) ${index === 1 ? 'scale(0)' : ''}` : 'none';
-        });
+        if (navToggle.classList.contains('active')) {
+            bars[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+            bars[1].style.opacity = '0';
+            bars[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+        } else {
+            bars[0].style.transform = 'none';
+            bars[1].style.opacity = '1';
+            bars[2].style.transform = 'none';
+        }
     });
     
-    // Close menu when clicking on links
+    // Close menu on link click
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             navMenu.classList.remove('active');
             navToggle.classList.remove('active');
+            const bars = navToggle.querySelectorAll('.bar');
+            bars[0].style.transform = 'none';
+            bars[1].style.opacity = '1';
+            bars[2].style.transform = 'none';
         });
     });
 }
 
-// Smooth Scrolling
+// ============================================
+// SMOOTH SCROLLING
+// ============================================
 function initSmoothScrolling() {
-    const links = document.querySelectorAll('a[href^=\"#\"]');
+    const links = document.querySelectorAll('a[href^="#"]');
     
     links.forEach(link => {
         link.addEventListener('click', (e) => {
@@ -358,7 +391,7 @@ function initSmoothScrolling() {
             const targetElement = document.querySelector(targetId);
             
             if (targetElement) {
-                const offset = 80; // Account for fixed navbar
+                const offset = 72;
                 const targetPosition = targetElement.offsetTop - offset;
                 
                 window.scrollTo({
@@ -370,71 +403,154 @@ function initSmoothScrolling() {
     });
 }
 
-// Scroll Indicator
+// ============================================
+// SCROLL INDICATOR
+// ============================================
 function initScrollIndicator() {
     const scrollIndicator = document.querySelector('.scroll-indicator');
     
     if (scrollIndicator) {
-        window.addEventListener('scroll', () => {
-            const scrolled = window.scrollY;
-            const opacity = Math.max(0, 1 - scrolled / 500);
+        window.addEventListener('scroll', throttle(() => {
+            const opacity = Math.max(0, 1 - window.scrollY / 400);
             scrollIndicator.style.opacity = opacity;
-        });
+        }, 16));
     }
 }
 
-// Contact Form Tooltips
+// ============================================
+// CONTACT TOOLTIPS
+// ============================================
 function initContactFormTooltips() {
     const socialLinks = document.querySelectorAll('.social-link[data-tooltip]');
     
     socialLinks.forEach(link => {
-        link.addEventListener('mouseenter', (e) => {
+        link.addEventListener('mouseenter', () => {
             const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
+            tooltip.className = 'tooltip-dynamic';
             tooltip.textContent = link.getAttribute('data-tooltip');
             tooltip.style.cssText = `
                 position: absolute;
-                bottom: -40px;
+                bottom: -34px;
                 left: 50%;
-                transform: translateX(-50%);
-                background: var(--bg-secondary);
-                color: var(--text-primary);
-                padding: 0.5rem 1rem;
+                transform: translateX(-50%) translateY(4px);
+                background: rgba(14, 21, 48, 0.95);
+                color: #f0f4ff;
+                padding: 0.3rem 0.7rem;
                 border-radius: 6px;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
                 white-space: nowrap;
                 z-index: 1000;
                 opacity: 0;
-                transition: opacity 0.3s ease;
+                transition: all 0.2s ease;
                 pointer-events: none;
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                backdrop-filter: blur(8px);
             `;
             
             link.style.position = 'relative';
             link.appendChild(tooltip);
             
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 tooltip.style.opacity = '1';
-            }, 100);
+                tooltip.style.transform = 'translateX(-50%) translateY(0)';
+            });
         });
         
         link.addEventListener('mouseleave', () => {
-            const tooltip = link.querySelector('.tooltip');
-            if (tooltip) {
-                tooltip.remove();
-            }
+            const tooltip = link.querySelector('.tooltip-dynamic');
+            if (tooltip) tooltip.remove();
         });
     });
 }
 
-// Button Click Effects
-document.addEventListener('click', (e) => {
-    if (e.target.matches('.btn, .social-link, .contact-method')) {
-        createRippleEffect(e);
+// ============================================
+// 3D CARD TILT EFFECT
+// ============================================
+function initTiltCards() {
+    const cards = document.querySelectorAll('.tilt-card');
+    
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -5;
+            const rotateY = ((x - centerX) / centerX) * 5;
+            
+            card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0)';
+            card.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        });
+        
+        card.addEventListener('mouseenter', () => {
+            card.style.transition = 'transform 0.1s ease';
+        });
+    });
+}
+
+// ============================================
+// TIMELINE ANIMATION
+// ============================================
+function initTimelineAnimation() {
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateX(0)';
+                
+                const dot = entry.target.querySelector('.timeline-dot');
+                if (dot) {
+                    dot.style.transform = 'scale(1.3)';
+                    dot.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    setTimeout(() => {
+                        dot.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+        });
+    }, { threshold: 0.2, rootMargin: '0px 0px -60px 0px' });
+    
+    timelineItems.forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-30px)';
+        item.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        observer.observe(item);
+    });
+}
+
+// ============================================
+// PARALLAX EFFECT
+// ============================================
+function initParallaxEffect() {
+    const heroShapes = document.querySelector('.hero-shapes');
+    
+    if (heroShapes) {
+        window.addEventListener('scroll', throttle(() => {
+            const scrolled = window.scrollY;
+            const rate = scrolled * -0.3;
+            heroShapes.style.transform = `translateY(${rate}px)`;
+        }, 16));
     }
+}
+
+// ============================================
+// BUTTON RIPPLE EFFECT
+// ============================================
+document.addEventListener('click', (e) => {
+    const target = e.target.closest('.btn, .social-link, .contact-method');
+    if (target) createRippleEffect(e, target);
 });
 
-function createRippleEffect(e) {
-    const button = e.target.closest('.btn, .social-link, .contact-method');
+function createRippleEffect(e, button) {
     const ripple = document.createElement('span');
     const rect = button.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
@@ -442,9 +558,9 @@ function createRippleEffect(e) {
     ripple.style.cssText = `
         position: absolute;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(0, 212, 255, 0.2);
         transform: scale(0);
-        animation: ripple 0.6s linear;
+        animation: rippleEffect 0.6s linear;
         pointer-events: none;
         width: ${size}px;
         height: ${size}px;
@@ -456,113 +572,28 @@ function createRippleEffect(e) {
     button.style.overflow = 'hidden';
     button.appendChild(ripple);
     
-    setTimeout(() => {
-        ripple.remove();
-    }, 600);
+    setTimeout(() => ripple.remove(), 600);
 }
 
-// Add ripple animation CSS
-const rippleCSS = `
-    @keyframes ripple {
-        to {
-            transform: scale(4);
-            opacity: 0;
-        }
+// Inject ripple animation CSS
+const rippleCSS = document.createElement('style');
+rippleCSS.textContent = `
+    @keyframes rippleEffect {
+        to { transform: scale(4); opacity: 0; }
     }
 `;
+document.head.appendChild(rippleCSS);
 
-const style = document.createElement('style');
-style.textContent = rippleCSS;
-document.head.appendChild(style);
-
-// Timeline Animation
-function initTimelineAnimation() {
-    const timelineItems = document.querySelectorAll('.timeline-item');
-    
-    const observerOptions = {
-        threshold: 0.3,
-        rootMargin: '0px 0px -100px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateX(0)';
-                
-                // Animate timeline dot
-                const dot = entry.target.querySelector('.timeline-dot');
-                if (dot) {
-                    dot.style.transform = 'scale(1.2)';
-                    setTimeout(() => {
-                        dot.style.transform = 'scale(1)';
-                    }, 300);
-                }
-            }
-        });
-    }, observerOptions);
-    
-    timelineItems.forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateX(-50px)';
-        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(item);
-    });
-}
-
-// Initialize timeline animation
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(initTimelineAnimation, 500);
-});
-
-// Parallax Effect for Hero Section
-function initParallaxEffect() {
-    const heroSection = document.querySelector('.hero');
-    const heroShapes = document.querySelector('.hero-shapes');
-    
-    if (heroShapes) {
-        window.addEventListener('scroll', throttle(() => {
-            const scrolled = window.scrollY;
-            const rate = scrolled * -0.5;
-            heroShapes.style.transform = `translateY(${rate}px)`;
-        }, 16));
-    }
-}
-
-// Initialize parallax effect
-document.addEventListener('DOMContentLoaded', initParallaxEffect);
-
-// Performance optimization: Lazy load images
-function initLazyLoading() {
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.remove('lazy');
-                    observer.unobserve(img);
-                }
-            });
-        });
-        
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            imageObserver.observe(img);
-        });
-    }
-}
-
-// Easter egg: Konami code
+// ============================================
+// KONAMI CODE EASTER EGG
+// ============================================
 function initKonamiCode() {
-    const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
+    const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
     let userInput = [];
     
     document.addEventListener('keydown', (e) => {
         userInput.push(e.keyCode);
-        
-        if (userInput.length > konamiCode.length) {
-            userInput.shift();
-        }
+        if (userInput.length > konamiCode.length) userInput.shift();
         
         if (userInput.join(',') === konamiCode.join(',')) {
             activateEasterEgg();
@@ -572,91 +603,54 @@ function initKonamiCode() {
 }
 
 function activateEasterEgg() {
-    // Add rainbow animation to hero title
     const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        heroTitle.style.background = 'linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet)';
-        heroTitle.style.backgroundSize = '400% 400%';
-        heroTitle.style.webkitBackgroundClip = 'text';
-        heroTitle.style.webkitTextFillColor = 'transparent';
-        heroTitle.style.animation = 'rainbow 2s ease infinite';
-        
-        // Add rainbow animation CSS
-        const rainbowCSS = `
-            @keyframes rainbow {
-                0% { background-position: 0% 50%; }
-                50% { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-            }
-        `;
-        
-        const style = document.createElement('style');
-        style.textContent = rainbowCSS;
-        document.head.appendChild(style);
-        
-        // Show celebration message
-        const message = document.createElement('div');
-        message.textContent = '🎉 Konami Code Activated! 🎉';
-        message.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--primary-color);
-            color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            font-size: 1.5rem;
-            z-index: 9999;
-            animation: celebration 3s ease forwards;
-        `;
-        
-        document.body.appendChild(message);
-        
-        setTimeout(() => {
-            message.remove();
-        }, 3000);
-    }
-}
-
-// Initialize easter egg
-document.addEventListener('DOMContentLoaded', initKonamiCode);
-
-// Add celebration animation CSS
-const celebrationCSS = `
-    @keyframes celebration {
-        0% {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.5);
+    if (!heroTitle) return;
+    
+    heroTitle.style.background = 'linear-gradient(45deg, #00d4ff, #7c3aed, #f59e0b, #10b981, #00d4ff)';
+    heroTitle.style.backgroundSize = '400% 400%';
+    heroTitle.style.webkitBackgroundClip = 'text';
+    heroTitle.style.webkitTextFillColor = 'transparent';
+    heroTitle.style.animation = 'rainbowShift 2s ease infinite';
+    
+    const rainbowCSS = document.createElement('style');
+    rainbowCSS.textContent = `
+        @keyframes rainbowShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        20% {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-        80% {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-        100% {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.5);
-        }
-    }
-`;
-
-const celebrationStyle = document.createElement('style');
-celebrationStyle.textContent = celebrationCSS;
-document.head.appendChild(celebrationStyle);
-
-// Progressive Web App support
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('SW registered: ', registration);
-            })
-            .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-            });
+    `;
+    document.head.appendChild(rainbowCSS);
+    
+    const message = document.createElement('div');
+    message.textContent = '🎉 Konami Code Activated! 🎉';
+    message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.5);
+        background: linear-gradient(135deg, #00d4ff, #7c3aed);
+        color: white;
+        padding: 1.5rem 3rem;
+        border-radius: 16px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
+    `;
+    
+    document.body.appendChild(message);
+    
+    requestAnimationFrame(() => {
+        message.style.opacity = '1';
+        message.style.transform = 'translate(-50%, -50%) scale(1)';
     });
+    
+    setTimeout(() => {
+        message.style.opacity = '0';
+        message.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        setTimeout(() => message.remove(), 400);
+    }, 2500);
 }
