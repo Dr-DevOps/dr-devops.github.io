@@ -769,20 +769,18 @@ function initHeroTerminal() {
     if (!terminalBody) return;
     
     const lines = [
-        { type: 'cmd', text: 'terraform apply -auto-approve' },
-        { type: 'log', text: 'aws_eks_cluster.prod: Creating...' },
-        { type: 'log', text: 'aws_eks_node_group.workers: Creating...' },
-        { type: 'log', text: 'aws_eks_cluster.prod: Still creating... [10s elapsed]' },
-        { type: 'log', text: 'aws_eks_cluster.prod: Creation complete [ID: dr-eks-prod]' },
-        { type: 'log', text: 'aws_eks_node_group.workers: Still creating... [10s elapsed]' },
-        { type: 'log', text: 'aws_eks_node_group.workers: Creation complete [ID: workers-nodegroup]' },
-        { type: 'log', text: 'helm_release.argocd: Deploying GitOps controller...' },
-        { type: 'log', text: 'helm_release.argocd: Deployment successful. Syncing state...' },
-        { type: 'success', text: 'Apply complete! Resources: 14 added, 0 changed, 0 destroyed.' },
-        { type: 'cmd', text: 'kubectl get nodes -o wide' },
-        { type: 'success', text: 'NAME            STATUS   ROLES    AGE   VERSION\nip-10-0-1-100   Ready    <none>   45s   v1.28.2\nip-10-0-2-101   Ready    <none>   43s   v1.28.2' },
-        { type: 'cmd', text: 'argocd app sync root-app' },
-        { type: 'success', text: 'App root-app successfully synced. HEALTHY state.' }
+        { type: 'cmd', text: 'tfsec . --concise' },
+        { type: 'log', text: 'Scanning infrastructure code for misconfigurations...' },
+        { type: 'success', text: 'tfsec: No high/critical severity issues found. PASSED.' },
+        { type: 'cmd', text: 'trivy image dr-devops/prod-app:v3.0' },
+        { type: 'log', text: 'Scanning container image tags for CVEs...' },
+        { type: 'log', text: 'Total Vulnerabilities: 0 (Critical: 0, High: 0, Medium: 2)' },
+        { type: 'success', text: 'Trivy: Security gates passed.' },
+        { type: 'cmd', text: 'gitleaks detect --source=. --verbose' },
+        { type: 'log', text: 'Scanning repository history for secrets leaks...' },
+        { type: 'success', text: 'GitLeaks: No leaked credentials or keys detected.' },
+        { type: 'cmd', text: 'kubectl get kubesec-scan -n prod' },
+        { type: 'success', text: 'NAME        SECOPS_GATE   COMPLIANCE   AGE\nprod-eks    PASSED        98%          4h' }
     ];
     
     let lineIdx = 0;
@@ -790,7 +788,7 @@ function initHeroTerminal() {
     function addTerminalLine() {
         if (lineIdx >= lines.length) {
             setTimeout(() => {
-                terminalBody.innerHTML = '<div class="terminal-line"><span class="prompt">dr-devops$</span> <span class="cmd">deploy_infrastructure --prod</span></div>';
+                terminalBody.innerHTML = '<div class="terminal-line"><span class="prompt">dr-devops$</span> <span class="cmd">devsecops_pipeline_run --scan</span></div>';
                 lineIdx = 0;
                 addTerminalLine();
             }, 6000);
