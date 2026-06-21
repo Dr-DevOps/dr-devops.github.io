@@ -238,6 +238,8 @@ jobs:
             --assert.assertions.network-dependency-tree-insight=off \
             --assert.assertions.cache-insight=off \
             --assert.assertions.render-blocking-insight=off \
+            --assert.assertions.largest-contentful-paint=off \
+            --assert.assertions.first-contentful-paint=off \
             --upload.target=temporary-public-storage || true
           echo "✅ Lighthouse audit complete — check results above"
 

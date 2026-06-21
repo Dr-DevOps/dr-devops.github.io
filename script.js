@@ -141,11 +141,12 @@
     const terminalBody = document.getElementById('terminal-body');
     if (terminalBody) {
         const commands = [
-            { cmd: 'whoami', output: 'vinayak-singh // DevSecOps Engineer', type: 'default' },
-            { cmd: 'cat /etc/experience', output: '7+ years · AWS · GCP · K8s · Terraform', type: 'default' },
-            { cmd: 'kubectl get pods --all-namespaces', output: 'All pods running ✓ — 99.9% uptime', type: 'success' },
-            { cmd: 'terraform plan', output: '14 resources to add, 0 to change, 0 to destroy', type: 'warn' },
-            { cmd: 'trivy image --severity CRITICAL app:latest', output: '0 vulnerabilities found — image is clean ✓', type: 'success' },
+            { cmd: 'whoami', output: 'vinayak-singh // DevSecOps Engineer & Cloud Security Architect', type: 'default' },
+            { cmd: 'cat /etc/experience', output: '8+ years · AWS · GCP · Kubernetes · Terraform', type: 'default' },
+            { cmd: 'kubectl get nodes', output: 'Ready ✓ (2 nodes: eks-node-01, eks-node-02)', type: 'success' },
+            { cmd: 'falcoctl status', output: 'Falco runtime security daemon active ✓', type: 'success' },
+            { cmd: 'terraform plan', output: 'Plan: 14 to add, 0 to change, 0 to destroy. Policy: PASSED ✓', type: 'success' },
+            { cmd: 'trivy k8s --severity CRITICAL cluster', output: '0 vulnerabilities found — EKS cluster secure ✓', type: 'success' },
             { cmd: 'echo $STATUS', output: '🟢 Available for hire — Let\'s build something secure', type: 'success' },
         ];
 
