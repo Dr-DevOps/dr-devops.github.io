@@ -225,26 +225,14 @@ jobs:
             --collect.url="https://dr-devops.github.io/" \
             --collect.numberOfRuns=3 \
             --assert.preset=lighthouse:recommended \
-            --assert.assertions.categories:performance=off \
+            --assert.assertions.categories:performance=error \
             --assert.assertions.categories:seo=error \
-            --assert.assertions.categories:accessibility=warn \
-            --assert.assertions.categories:best-practices=warn \
-            --assert.assertions.unused-css-rules=off \
+            --assert.assertions.categories:accessibility=error \
+            --assert.assertions.categories:best-practices=error \
             --assert.assertions.uses-long-cache-ttl=off \
             --assert.assertions.lcp-lazy-loaded=off \
             --assert.assertions.prioritize-lcp-image=off \
-            --assert.assertions.non-composited-animations=off \
-            --assert.assertions.font-display-insight=off \
-            --assert.assertions.network-dependency-tree-insight=off \
-            --assert.assertions.cache-insight=off \
-            --assert.assertions.render-blocking-insight=off \
-            --assert.assertions.largest-contentful-paint=off \
-            --assert.assertions.first-contentful-paint=off \
-            --assert.assertions.interactive=off \
-            --assert.assertions.speed-index=off \
-            --assert.assertions.total-blocking-time=off \
-            --assert.assertions.cumulative-layout-shift=off \
-            --upload.target=temporary-public-storage || true
+            --upload.target=temporary-public-storage
           echo "✅ Lighthouse audit complete — check results above"
 
   # ── Deploy to GitHub Pages ──
@@ -266,6 +254,15 @@ jobs:
       - name: Inject Build ID
         run: |
           sed -i 's/<\/head>/<meta name="build-id" content="${{ github.run_id }}-${{ github.run_attempt }}"><\/head>/' index.html
+
+      - name: Minify CSS and JS
+        run: |
+          npx clean-css-cli -o styles.css styles.css
+          npx terser script.js -o script.js
+
+      - name: Inline Assets
+        run: |
+          node inline.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
