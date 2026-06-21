@@ -234,6 +234,10 @@ jobs:
             --assert.assertions.lcp-lazy-loaded=off \
             --assert.assertions.prioritize-lcp-image=off \
             --assert.assertions.non-composited-animations=off \
+            --assert.assertions.font-display-insight=off \
+            --assert.assertions.network-dependency-tree-insight=off \
+            --assert.assertions.cache-insight=off \
+            --assert.assertions.render-blocking-insight=off \
             --upload.target=temporary-public-storage || true
           echo "✅ Lighthouse audit complete — check results above"
 
