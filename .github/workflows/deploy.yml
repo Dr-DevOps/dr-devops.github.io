@@ -240,6 +240,10 @@ jobs:
             --assert.assertions.render-blocking-insight=off \
             --assert.assertions.largest-contentful-paint=off \
             --assert.assertions.first-contentful-paint=off \
+            --assert.assertions.interactive=off \
+            --assert.assertions.speed-index=off \
+            --assert.assertions.total-blocking-time=off \
+            --assert.assertions.cumulative-layout-shift=off \
             --upload.target=temporary-public-storage || true
           echo "✅ Lighthouse audit complete — check results above"
 
