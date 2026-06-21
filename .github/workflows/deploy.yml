@@ -165,10 +165,28 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git diff --quiet sitemap.xml || (git add sitemap.xml && git commit -m "chore(seo): auto-update sitemap lastmod [skip ci]" && git push)
 
-      # ── Notify Search Engines ──
-      - name: Submit to IndexNow (Bing/Yandex/etc.)
+      # ── Ping Search Engines ──
+      - name: Ping Google
         run: |
-          echo "📡 Submitting sitemap to IndexNow..."
+          echo "📡 Pinging Google with sitemap..."
+          curl -s "https://www.google.com/ping?sitemap=https://dr-devops.github.io/sitemap.xml" -o /dev/null -w "HTTP %{http_code}\n"
+          echo "✅ Google pinged"
+
+      - name: Ping Bing
+        run: |
+          echo "📡 Pinging Bing with sitemap..."
+          curl -s "https://www.bing.com/ping?sitemap=https://dr-devops.github.io/sitemap.xml" -o /dev/null -w "HTTP %{http_code}\n"
+          echo "✅ Bing pinged"
+
+      - name: Ping Yandex
+        run: |
+          echo "📡 Pinging Yandex with sitemap..."
+          curl -s "https://webmaster.yandex.com/ping?sitemap=https://dr-devops.github.io/sitemap.xml" -o /dev/null -w "HTTP %{http_code}\n"
+          echo "✅ Yandex pinged"
+
+      - name: Ping IndexNow (Bing/Yandex instant indexing)
+        run: |
+          echo "📡 Submitting to IndexNow..."
           curl -s -X POST "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json" \
             -d '{
@@ -178,7 +196,7 @@ jobs:
                 "https://dr-devops.github.io/"
               ]
             }' -o /dev/null -w "HTTP %{http_code}\n"
-          echo "✅ IndexNow submission complete"
+          echo "✅ IndexNow submitted"
 
   # ── Lighthouse SEO & Performance Audit ──
   lighthouse-audit:
