@@ -166,17 +166,6 @@ jobs:
           git diff --quiet sitemap.xml || (git add sitemap.xml && git commit -m "chore(seo): auto-update sitemap lastmod [skip ci]" && git push)
 
       # ── Ping Search Engines ──
-      - name: Ping Google
-        run: |
-          echo "📡 Pinging Google with sitemap..."
-          curl -s "https://www.google.com/ping?sitemap=https://dr-devops.github.io/sitemap.xml" -o /dev/null -w "HTTP %{http_code}\n"
-          echo "✅ Google pinged"
-
-      - name: Ping Bing
-        run: |
-          echo "📡 Pinging Bing with sitemap..."
-          curl -s "https://www.bing.com/ping?sitemap=https://dr-devops.github.io/sitemap.xml" -o /dev/null -w "HTTP %{http_code}\n"
-          echo "✅ Bing pinged"
 
       - name: Ping Yandex
         run: |
