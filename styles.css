@@ -11,8 +11,8 @@
     --border: rgba(80, 200, 120, 0.08);
     --border-glow: rgba(40, 190, 100, 0.25);
     --text: #e0ece6;
-    --text-dim: #7a9e8a;
-    --text-muted: #4a6858;
+    --text-dim: #a2c7b5;
+    --text-muted: #8eb3a0;
     --accent: #34d399;
     --accent2: #d4a017;
     --accent3: #f5c842;
@@ -226,7 +226,7 @@ em { color: var(--accent3); font-style: normal; font-weight: 500; }
     border: none; position: relative; overflow: hidden;
 }
 .btn--primary {
-    background: var(--gradient-main); color: #fff;
+    background: var(--gradient-main); color: var(--bg);
     box-shadow: 0 4px 24px rgba(52, 211, 153, 0.25);
 }
 .btn--primary:hover {

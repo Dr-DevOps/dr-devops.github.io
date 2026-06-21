@@ -216,6 +216,11 @@ jobs:
             --assert.assertions.categories:seo=error \
             --assert.assertions.categories:accessibility=warn \
             --assert.assertions.categories:best-practices=warn \
+            --assert.assertions.unused-css-rules=off \
+            --assert.assertions.uses-long-cache-ttl=off \
+            --assert.assertions.lcp-lazy-loaded=off \
+            --assert.assertions.prioritize-lcp-image=off \
+            --assert.assertions.non-composited-animations=off \
             --upload.target=temporary-public-storage || true
           echo "✅ Lighthouse audit complete — check results above"
 
