@@ -1,0 +1,18 @@
+{
+    "name": "Vinayak Singh — DevSecOps Engineer",
+    "short_name": "VS Portfolio",
+    "description": "Senior DevSecOps Engineer with 7+ years in cloud security, AWS, Kubernetes & Terraform.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#060b08",
+    "theme_color": "#34d399",
+    "orientation": "portrait-primary",
+    "categories": ["portfolio", "technology", "devops"],
+    "icons": [
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ]
+}

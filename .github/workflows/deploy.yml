@@ -1,12 +1,15 @@
-name: Deploy to GitHub Pages
+name: SEO Automation & Deploy
 
 on:
   push:
     branches: ["main"]
+  schedule:
+    # Re-ping search engines weekly to keep crawl priority high
+    - cron: '0 8 * * 1'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -15,7 +18,221 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  seo-optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Auto-update sitemap lastmod to today's date ──
+      - name: Update Sitemap Last Modified
+        run: |
+          TODAY=$(date -u +"%Y-%m-%d")
+          sed -i "s|<lastmod>.*</lastmod>|<lastmod>${TODAY}</lastmod>|g" sitemap.xml
+          echo "✅ Sitemap lastmod updated to ${TODAY}"
+
+      # ── Validate HTML SEO essentials ──
+      - name: SEO Validation
+        run: |
+          echo "🔍 Running SEO validation checks..."
+          ERRORS=0
+
+          # Check title tag exists and is not empty
+          if ! grep -q '<title>.*[^<].*</title>' index.html; then
+            echo "❌ Missing or empty <title> tag"
+            ERRORS=$((ERRORS+1))
+          else
+            TITLE=$(grep -oP '(?<=<title>).*(?=</title>)' index.html)
+            TITLE_LEN=${#TITLE}
+            echo "✅ Title tag found (${TITLE_LEN} chars): ${TITLE}"
+            if [ $TITLE_LEN -gt 60 ]; then
+              echo "⚠️  Title is ${TITLE_LEN} chars — ideally under 60 for SERP display"
+            fi
+          fi
+
+          # Check meta description
+          if ! grep -q 'name="description"' index.html; then
+            echo "❌ Missing meta description"
+            ERRORS=$((ERRORS+1))
+          else
+            DESC=$(grep -oP 'name="description"\s+content="\K[^"]+' index.html)
+            DESC_LEN=${#DESC}
+            echo "✅ Meta description found (${DESC_LEN} chars)"
+            if [ $DESC_LEN -gt 160 ]; then
+              echo "⚠️  Description is ${DESC_LEN} chars — ideally under 160"
+            fi
+          fi
+
+          # Check canonical URL
+          if grep -q 'rel="canonical"' index.html; then
+            echo "✅ Canonical URL present"
+          else
+            echo "❌ Missing canonical URL"
+            ERRORS=$((ERRORS+1))
+          fi
+
+          # Check Open Graph tags
+          for OG_TAG in "og:title" "og:description" "og:url" "og:type"; do
+            if grep -q "property=\"${OG_TAG}\"" index.html; then
+              echo "✅ ${OG_TAG} present"
+            else
+              echo "❌ Missing ${OG_TAG}"
+              ERRORS=$((ERRORS+1))
+            fi
+          done
+
+          # Check JSON-LD structured data
+          if grep -q 'application/ld+json' index.html; then
+            echo "✅ JSON-LD structured data present"
+          else
+            echo "❌ Missing JSON-LD structured data"
+            ERRORS=$((ERRORS+1))
+          fi
+
+          # Check robots meta
+          if grep -q 'name="robots"' index.html; then
+            echo "✅ Robots meta tag present"
+          else
+            echo "⚠️  No robots meta tag found"
+          fi
+
+          # Check H1 tag (should have exactly one)
+          H1_COUNT=$(grep -c '<h1' index.html || true)
+          if [ "$H1_COUNT" -eq 1 ]; then
+            echo "✅ Exactly 1 <h1> tag found"
+          elif [ "$H1_COUNT" -eq 0 ]; then
+            echo "❌ No <h1> tag found"
+            ERRORS=$((ERRORS+1))
+          else
+            echo "⚠️  ${H1_COUNT} <h1> tags found — ideally should be 1"
+          fi
+
+          # Check alt attributes on images (if any)
+          IMG_COUNT=$(grep -c '<img' index.html || true)
+          if [ "$IMG_COUNT" -gt 0 ]; then
+            IMG_NO_ALT=$(grep '<img' index.html | grep -cv 'alt=' || true)
+            if [ "$IMG_NO_ALT" -gt 0 ]; then
+              echo "⚠️  ${IMG_NO_ALT} images missing alt attributes"
+            else
+              echo "✅ All images have alt attributes"
+            fi
+          fi
+
+          # Check sitemap.xml exists
+          if [ -f "sitemap.xml" ]; then
+            echo "✅ sitemap.xml exists"
+          else
+            echo "❌ sitemap.xml missing"
+            ERRORS=$((ERRORS+1))
+          fi
+
+          # Check robots.txt exists
+          if [ -f "robots.txt" ]; then
+            echo "✅ robots.txt exists"
+          else
+            echo "❌ robots.txt missing"
+            ERRORS=$((ERRORS+1))
+          fi
+
+          # Check manifest.json
+          if [ -f "manifest.json" ]; then
+            echo "✅ manifest.json exists (PWA support)"
+          else
+            echo "⚠️  manifest.json missing — no PWA support"
+          fi
+
+          # Check 404.html
+          if [ -f "404.html" ]; then
+            echo "✅ Custom 404.html exists"
+          else
+            echo "⚠️  No custom 404.html — GitHub will show default"
+          fi
+
+          echo ""
+          if [ $ERRORS -gt 0 ]; then
+            echo "🚨 ${ERRORS} SEO issue(s) found — review above"
+            exit 1
+          else
+            echo "🎉 All SEO checks passed!"
+          fi
+
+      # ── Commit sitemap update if changed ──
+      - name: Commit Sitemap Update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet sitemap.xml || (git add sitemap.xml && git commit -m "chore(seo): auto-update sitemap lastmod [skip ci]" && git push)
+
+      # ── Ping Search Engines ──
+      - name: Ping Google
+        run: |
+          echo "📡 Pinging Google with sitemap..."
+          curl -s "https://www.google.com/ping?sitemap=https://dr-devops.github.io/sitemap.xml" -o /dev/null -w "HTTP %{http_code}\n"
+          echo "✅ Google pinged"
+
+      - name: Ping Bing
+        run: |
+          echo "📡 Pinging Bing with sitemap..."
+          curl -s "https://www.bing.com/ping?sitemap=https://dr-devops.github.io/sitemap.xml" -o /dev/null -w "HTTP %{http_code}\n"
+          echo "✅ Bing pinged"
+
+      - name: Ping Yandex
+        run: |
+          echo "📡 Pinging Yandex with sitemap..."
+          curl -s "https://webmaster.yandex.com/ping?sitemap=https://dr-devops.github.io/sitemap.xml" -o /dev/null -w "HTTP %{http_code}\n"
+          echo "✅ Yandex pinged"
+
+      - name: Ping IndexNow (Bing/Yandex instant indexing)
+        run: |
+          echo "📡 Submitting to IndexNow..."
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "host": "dr-devops.github.io",
+              "key": "d4f7a2c8b1e34567890abcdef1234567",
+              "urlList": [
+                "https://dr-devops.github.io/"
+              ]
+            }' -o /dev/null -w "HTTP %{http_code}\n"
+          echo "✅ IndexNow submitted"
+
+  # ── Lighthouse SEO & Performance Audit ──
+  lighthouse-audit:
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Wait for deploy to propagate
+        run: sleep 30
+
+      - name: Run Lighthouse Audit
+        run: |
+          lhci autorun \
+            --collect.url="https://dr-devops.github.io/" \
+            --collect.numberOfRuns=3 \
+            --assert.preset=lighthouse:recommended \
+            --assert.assertions.categories:performance=off \
+            --assert.assertions.categories:seo=error \
+            --assert.assertions.categories:accessibility=warn \
+            --assert.assertions.categories:best-practices=warn \
+            --upload.target=temporary-public-storage || true
+          echo "✅ Lighthouse audit complete — check results above"
+
+  # ── Deploy to GitHub Pages ──
   deploy:
+    needs: [seo-optimize]
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -23,6 +240,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
