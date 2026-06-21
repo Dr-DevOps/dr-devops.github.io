@@ -14,21 +14,31 @@
         let mouse = { x: -1000, y: -1000 };
         let animId;
 
+        let ticking = false;
+
         function resize() {
             w = canvas.width = window.innerWidth;
             h = canvas.height = window.innerHeight;
             cols = Math.ceil(w / CELL) + 1;
             rows = Math.ceil(h / CELL) + 1;
+            requestDraw();
         }
-        resize();
         window.addEventListener('resize', resize);
 
         document.addEventListener('mousemove', (e) => {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
+            requestDraw();
         });
 
-        function drawGrid(time) {
+        function requestDraw() {
+            if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(drawGrid);
+            }
+        }
+
+        function drawGrid() {
             ctx.clearRect(0, 0, w, h);
             for (let i = 0; i <= cols; i++) {
                 for (let j = 0; j <= rows; j++) {
@@ -64,18 +74,11 @@
                 ctx.stroke();
             }
 
-            animId = requestAnimationFrame(drawGrid);
+            ticking = false;
         }
-        drawGrid(0);
 
-        // Pause when tab not visible
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                cancelAnimationFrame(animId);
-            } else {
-                drawGrid(0);
-            }
-        });
+        // Initialize and first draw
+        resize();
     }
 
     // ─── Navigation ─────────────────────────────
