@@ -58,13 +58,13 @@
 
                     ctx.beginPath();
                     ctx.arc(x, y, size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(52, 211, 153, ${alpha})`;
+                    ctx.fillStyle = `rgba(0, 200, 150, ${alpha})`;
                     ctx.fill();
                 }
             }
 
             // Draw faint grid lines
-            ctx.strokeStyle = 'rgba(52, 211, 153, 0.025)';
+            ctx.strokeStyle = 'rgba(0, 200, 150, 0.02)';
             ctx.lineWidth = 0.5;
             for (let i = 0; i <= cols; i++) {
                 ctx.beginPath();
@@ -280,11 +280,11 @@
 
                 const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
                 stop1.setAttribute('offset', '0%');
-                stop1.setAttribute('stop-color', '#34d399');
+                stop1.setAttribute('stop-color', '#00C896');
 
                 const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
                 stop2.setAttribute('offset', '100%');
-                stop2.setAttribute('stop-color', '#d4a017');
+                stop2.setAttribute('stop-color', '#4F8EF7');
 
                 gradient.appendChild(stop1);
                 gradient.appendChild(stop2);
