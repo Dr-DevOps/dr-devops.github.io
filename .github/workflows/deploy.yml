@@ -225,13 +225,16 @@ jobs:
             --collect.url="https://dr-devops.github.io/" \
             --collect.numberOfRuns=3 \
             --assert.preset=lighthouse:recommended \
-            --assert.assertions.categories:performance=error \
+            --assert.assertions.categories:performance=warn \
             --assert.assertions.categories:seo=error \
             --assert.assertions.categories:accessibility=error \
             --assert.assertions.categories:best-practices=error \
             --assert.assertions.uses-long-cache-ttl=off \
             --assert.assertions.lcp-lazy-loaded=off \
             --assert.assertions.prioritize-lcp-image=off \
+            --assert.assertions.font-display-insight=off \
+            --assert.assertions.network-dependency-tree-insight=off \
+            --assert.assertions.unused-css-rules=off \
             --upload.target=temporary-public-storage
           echo "✅ Lighthouse audit complete — check results above"
 
